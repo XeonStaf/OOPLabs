@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Isu.Tools;
 
@@ -12,21 +13,15 @@ namespace Isu.Services
 
         public Group AddGroup(string name)
         {
-            if (name[0] != 'M' && name[1] != '3')
-                throw new IsuException("Group is incorrect");
+            CheckGroupPrefixStartM3(name);
             int courseNum = name[2] - '0';
-            if (courseNum > 9 || courseNum < 1)
-                throw new IsuException("That course can't be exists");
+            CheckCourseNumToCorrect(courseNum);
             int groupNum = ((name[3] - '0') * 10) + (name[4] - '0');
-            if (groupNum > 99 || groupNum < 0)
-                throw new IsuException("That group can't be exists");
+            CheckGroupNumberToCorrect(groupNum);
             CourseNumber targetCourse = null;
-            foreach (CourseNumber course in _courses)
+            foreach (var course in _courses.Where(course => course.CourseNum == courseNum))
             {
-                if (course.CourseNum == courseNum)
-                {
-                    targetCourse = course;
-                }
+                targetCourse = course;
             }
 
             if (targetCourse == null)
@@ -49,7 +44,7 @@ namespace Isu.Services
             return newStudent;
         }
 
-        public Student GetStudent(int id)
+        public Student GetStudent(Guid id)
         {
             foreach (CourseNumber course in _courses)
             {
@@ -68,19 +63,7 @@ namespace Isu.Services
 
         public Student FindStudent(string name)
         {
-            foreach (CourseNumber course in _courses)
-            {
-                foreach (Group group in course.Groups)
-                {
-                    foreach (Student student in group.Students)
-                    {
-                        if (student.Name == name)
-                            return student;
-                    }
-                }
-            }
-
-            return null;
+            return (from course in _courses from @group in course.Groups from student in @group.Students select student).FirstOrDefault(student => student.Name == name);
         }
 
         public List<Student> FindStudents(string groupName)
@@ -91,41 +74,19 @@ namespace Isu.Services
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
-            var result = new List<Student>();
-            foreach (CourseNumber course in _courses)
-            {
-                foreach (Group group in course.Groups)
-                {
-                    foreach (Student student in group.Students)
-                    {
-                        result.Add(student);
-                    }
-                }
-            }
-
-            return result;
+            return (from course in _courses from @group in course.Groups from student in @group.Students select student).ToList();
         }
 
         public Group FindGroup(string groupName)
         {
-            foreach (CourseNumber course in _courses)
-            {
-                foreach (Group group in course.Groups)
-                {
-                    if (group.Str() == groupName)
-                        return group;
-                }
-            }
-
-            return null;
+            return _courses.SelectMany(course => course.Groups).FirstOrDefault(@group => @group.GroupHumanString() == groupName);
         }
 
         public List<Group> FindGroups(CourseNumber courseNumber)
         {
-            foreach (CourseNumber course in _courses)
+            foreach (var course in _courses.Where(course => course.Equals(courseNumber)))
             {
-                if (course.Equals(courseNumber))
-                    return course.Groups;
+                return course.Groups;
             }
 
             return new List<Group>();
@@ -139,6 +100,24 @@ namespace Isu.Services
             oldGroup.Students.Remove(student);
             student.Group = newGroup;
             newGroup.Students.Add(student);
+        }
+
+        private static void CheckGroupPrefixStartM3(string name)
+        {
+            if (name[0] != 'M' && name[1] != '3')
+                throw new IsuException("Group is incorrect");
+        }
+
+        private static void CheckCourseNumToCorrect(int courseNum)
+        {
+            if (courseNum > 9 || courseNum < 1)
+                throw new IsuException("That course can't be exists");
+        }
+
+        private static void CheckGroupNumberToCorrect(int groupNum)
+        {
+            if (groupNum > 99 || groupNum < 0)
+                throw new IsuException("That group can't be exists");
         }
 }
 }

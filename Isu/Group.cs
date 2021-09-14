@@ -15,7 +15,7 @@ namespace Isu
         public CourseNumber CourseNumber { get; }
         public int GroupNumber { get; }
         public List<Student> Students { get; }
-        public string Str()
+        public string GroupHumanString()
         {
             return $"M{this.CourseNumber.CourseNum}{this.GroupNumber}";
         }

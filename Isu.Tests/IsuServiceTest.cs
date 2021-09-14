@@ -19,9 +19,7 @@ namespace Isu.Tests
         [Test]
         public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
         {
-            Console.WriteLine("Test1");
             Group group = _isuService.AddGroup("M3205");
-            Console.WriteLine(group.Str());
             Student student = _isuService.AddStudent(group,"Test");
             Assert.Contains(student, group.Students);
         }
