@@ -46,16 +46,9 @@ namespace Isu.Services
 
         public Student GetStudent(Guid id)
         {
-            foreach (CourseNumber course in _courses)
+            foreach (var student in from course in _courses from @group in course.Groups from student in @group.Students where student.Id == id select student)
             {
-                foreach (Group group in course.Groups)
-                {
-                    foreach (Student student in group.Students)
-                    {
-                        if (student.Id == id)
-                            return student;
-                    }
-                }
+                return student;
             }
 
             throw new IsuException("Incorrect ID");
