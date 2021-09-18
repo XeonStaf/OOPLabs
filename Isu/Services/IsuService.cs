@@ -95,19 +95,19 @@ namespace Isu.Services
             newGroup.Students.Add(student);
         }
 
-        private static void CheckGroupPrefixStartM3(string name)
+        private void CheckGroupPrefixStartM3(string name)
         {
             if (name[0] != 'M' && name[1] != '3')
                 throw new IsuException("Group is incorrect");
         }
 
-        private static void CheckCourseNumToCorrect(int courseNum)
+        private void CheckCourseNumToCorrect(int courseNum)
         {
             if (courseNum > 9 || courseNum < 1)
                 throw new IsuException("That course can't be exists");
         }
 
-        private static void CheckGroupNumberToCorrect(int groupNum)
+        private void CheckGroupNumberToCorrect(int groupNum)
         {
             if (groupNum > 99 || groupNum < 0)
                 throw new IsuException("That group can't be exists");
