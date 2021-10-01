@@ -7,15 +7,15 @@ namespace Shops.Models
 {
     public class Shop
     {
-        private int _money;
-        private List<ProductInShop> _products;
+        private int _shopsMoney;
+        private List<ShopProducts> _products;
         public Shop(string name, string address, int startMoney)
         {
             Name = name;
-            _money = startMoney;
+            _shopsMoney = startMoney;
             Address = address;
             Id = Guid.NewGuid();
-            _products = new List<ProductInShop>();
+            _products = new List<ShopProducts>();
         }
 
         public string Name { get; }
@@ -24,15 +24,15 @@ namespace Shops.Models
 
         public void SupplyOrder(Order order)
         {
-            foreach (ProductInShop orderProduct in order.OrderContent)
+            foreach (ShopProducts orderProduct in order.OrderContent)
             {
-                foreach (ProductInShop inShop in _products.Where(inShop => inShop.Product.Equals(orderProduct.Product)))
+                foreach (ShopProducts inShop in _products.Where(inShop => inShop.Product.Equals(orderProduct.Product)))
                 {
                     inShop.Cost = orderProduct.Cost;
                     inShop.NumberOfProduct += orderProduct.NumberOfProduct;
                 }
 
-                _products.Add(new ProductInShop(orderProduct.Product, orderProduct.Cost, orderProduct.NumberOfProduct));
+                _products.Add(new ShopProducts(orderProduct.Product, orderProduct.Cost, orderProduct.NumberOfProduct));
             }
 
             order = null;
@@ -63,24 +63,24 @@ namespace Shops.Models
             int total = 0;
             foreach ((Product product, int amount) in request)
             {
-                ProductInShop productInShop = this.GetProduct(product.Id);
-                if (productInShop.NumberOfProduct < amount)
+                ShopProducts shopProducts = this.GetProduct(product.Id);
+                if (shopProducts.NumberOfProduct < amount)
                     throw new CompanyManagerException($"There are not enough {product.Name} for purchase");
-                total += productInShop.Cost * amount;
+                total += shopProducts.Cost * amount;
             }
 
-            client.DraftMoney(total);
-            this._money += total;
+            client.WithdrawnMoney(total);
+            this._shopsMoney += total;
             foreach ((Product product, int amount) in request)
             {
-                ProductInShop productInShop = this.GetProduct(product.Id);
-                productInShop.NumberOfProduct -= amount;
+                ShopProducts shopProducts = this.GetProduct(product.Id);
+                shopProducts.NumberOfProduct -= amount;
             }
         }
 
-        private ProductInShop GetProduct(Guid id)
+        private ShopProducts GetProduct(Guid id)
         {
-            foreach (ProductInShop item in _products.Where(item => item.Product.Id == id))
+            foreach (ShopProducts item in _products.Where(item => item.Product.Id == id))
             {
                 return item;
             }

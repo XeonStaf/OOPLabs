@@ -1,8 +1,8 @@
 namespace Shops.Models
 {
-    public class ProductInShop
+    public class ShopProducts
     {
-        public ProductInShop(Product product, int cost, int numberOfProduct)
+        public ShopProducts(Product product, int cost, int numberOfProduct)
         {
             Product = product;
             Cost = cost;

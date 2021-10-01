@@ -14,7 +14,7 @@ namespace Shops.Models
 
         public string Name { get; }
 
-        public void DraftMoney(int amount)
+        public void WithdrawnMoney(int amount)
         {
             if (_money < amount)
                 throw new CompanyManagerException("Client has not enough money");
