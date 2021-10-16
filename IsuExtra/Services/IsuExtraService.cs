@@ -10,7 +10,7 @@ namespace IsuExtra.Services
 {
     public class IsuExtraService : IIsuExtraService
     {
-        private List<OGNP> _ognps = new List<OGNP>();
+        private List<Ognp> _ognps = new List<Ognp>();
         public IsuService IsuService { get; } = new IsuService();
 
         public ExtraGroup AddGroup(string name, int maxStudent)
@@ -32,16 +32,16 @@ namespace IsuExtra.Services
             return newStudent;
         }
 
-        public OGNP AddOGNP(string name, char megaFaculty)
+        public Ognp AddOgnp(string name, char megaFaculty)
         {
-            var newOGNP = new OGNP(name, megaFaculty);
+            var newOGNP = new Ognp(name, megaFaculty);
             _ognps.Add(newOGNP);
             return newOGNP;
         }
 
-        public OGNP GetOGNP(ExtraGroup flow)
+        public Ognp GetOGNP(ExtraGroup flow)
         {
-            foreach (var ognp in _ognps.Where(ognp => ognp.GetFlows().Contains(flow)))
+            foreach (var ognp in _ognps.Where(ognp => ognp.GetStreams().Contains(flow)))
             {
                 return ognp;
             }
@@ -51,14 +51,14 @@ namespace IsuExtra.Services
 
         public void EnrollStudentToFlow(ExtraGroup flow, ExtraClassStudent student)
         {
-            OGNP ognp = GetOGNP(flow);
+            Ognp ognp = GetOGNP(flow);
             if (student.Group.GroupHumanString()[0] == ognp.MegaFaculty)
                 throw new IsuExtraException("You can't enroll on OGNP, which same as yours");
             if (flow.Students.Count > flow.MaxStudent)
                 throw new IsuExtraException("This flow is full");
-            if (flow.CheckFlowsOverlap((ExtraGroup)student.Group))
+            if (flow.CheckStreamsOverlap((ExtraGroup)student.Group))
                 throw new IsuExtraException("Found intersection!");
-            if (student.AdditionalClass.Any(item => flow.CheckFlowsOverlap(item)))
+            if (student.AdditionalClass.Any(item => flow.CheckStreamsOverlap(item)))
             {
                 throw new IsuExtraException("Found intersection!");
             }
@@ -75,9 +75,9 @@ namespace IsuExtra.Services
             student.AdditionalClass.Remove(flow);
         }
 
-        public List<ExtraGroup> GetFlows(OGNP ognp)
+        public List<ExtraGroup> GetFlows(Ognp ognp)
         {
-            return ognp.GetFlows();
+            return ognp.GetStreams();
         }
 
         public List<Student> GetStudents(ExtraGroup flow)

@@ -15,7 +15,7 @@ namespace IsuExtra.Tests
         private CourseNumber _course;
         private ExtraClassStudent _testStudent;
         private ExtraGroup _mainGroup;
-        private OGNP _testOGNP;
+        private Ognp _testOGNP;
         private ExtraGroup _flow1;
         private ExtraGroup _flow2;
         
@@ -23,11 +23,11 @@ namespace IsuExtra.Tests
         public void Setup()
         {
             _isuExtraService = new IsuExtraService();
-            _testOGNP = _isuExtraService.AddOGNP("Test", 'P');
+            _testOGNP = _isuExtraService.AddOgnp("Test", 'P');
             _course = new CourseNumber(2);
-            _flow1 = _testOGNP.AddFlow(_course,20);
+            _flow1 = _testOGNP.AddStream(_course,20);
             _flow1.AddClass("Sidorova P.A.", "202", 0, 12, 15, 00, 00);
-            _flow2 = _testOGNP.AddFlow(_course,10);
+            _flow2 = _testOGNP.AddStream(_course,10);
             _flow2.AddClass("Pivanova P.A.", "302", 0, 10, 12, 00, 30);
             _mainGroup = _isuExtraService.AddGroup("M3205", 20);
             _mainGroup.AddClass("Pikov L.O.", "303", 0, 8, 10, 00, 10);
@@ -37,7 +37,7 @@ namespace IsuExtra.Tests
         [Test]
         public void CheckForOverlap_FlowsAreOverlaped()
         {
-            Assert.True(_flow1.CheckFlowsOverlap(_flow2));
+            Assert.True(_flow1.CheckStreamsOverlap(_flow2));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace IsuExtra.Tests
         }
         
         [Test]
-        public void EnrollStudentToOGNP_ListContainsObject()
+        public void EnrollStudentToOgnp_ListContainsObject()
         {
             _isuExtraService.EnrollStudentToFlow(_flow1, _testStudent);
             Assert.Contains(_testStudent, _flow1.Students);

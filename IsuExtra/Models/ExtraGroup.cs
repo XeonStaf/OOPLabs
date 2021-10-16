@@ -22,7 +22,6 @@ namespace IsuExtra.Models
             var newClass = new Lesson(room, teacher, day, startHour, endHour, startMinute, endMinute);
             if (Classes.Any(thisClass => newClass.CheckOverlap(thisClass)))
             {
-                newClass = null;
                 throw new IsuExtraException("You can't add class which overlap with existing class");
             }
 
@@ -30,12 +29,9 @@ namespace IsuExtra.Models
             return newClass;
         }
 
-        public bool CheckFlowsOverlap(ExtraGroup other)
+        public bool CheckStreamsOverlap(ExtraGroup other)
         {
-            return (from thisClass in Classes
-                from otherClass in other.Classes
-                where thisClass.CheckOverlap(otherClass)
-                select thisClass).Any();
+            return Classes.Any(thisLesson => other.Classes.Any(otherLesson => thisLesson.CheckOverlap(otherLesson)));
         }
 
         public List<Student> GetStudents()
