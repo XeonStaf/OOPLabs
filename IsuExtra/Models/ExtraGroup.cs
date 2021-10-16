@@ -11,15 +11,15 @@ namespace IsuExtra.Models
             : base(course, groupNumber)
         {
             MaxStudent = maxStudent;
-            Classes = new List<Class>();
+            Classes = new List<Lesson>();
         }
 
-        public List<Class> Classes { get; }
+        public List<Lesson> Classes { get; }
         public int MaxStudent { get; }
 
-        public Class AddClass(string teacher, string room, int day, int startHour, int endHour, int startMinute, int endMinute)
+        public Lesson AddClass(string teacher, string room, int day, int startHour, int endHour, int startMinute, int endMinute)
         {
-            var newClass = new Class(room, teacher, day, startHour, endHour, startMinute, endMinute);
+            var newClass = new Lesson(room, teacher, day, startHour, endHour, startMinute, endMinute);
             if (Classes.Any(thisClass => newClass.CheckOverlap(thisClass)))
             {
                 newClass = null;

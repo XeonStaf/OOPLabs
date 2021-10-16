@@ -4,9 +4,9 @@ using IsuExtra.Tools;
 
 namespace IsuExtra.Models
 {
-    public class Class
+    public class Lesson
     {
-        public Class(string room, string teacher, int day, int startHour, int endHour, int startMinute, int endMinute)
+        public Lesson(string room, string teacher, int day, int startHour, int endHour, int startMinute, int endMinute)
         {
             Room = room;
             Teacher = teacher;
@@ -23,7 +23,7 @@ namespace IsuExtra.Models
         public DateTime StartTime { get; }
         public DateTime EndTime { get; }
 
-        public bool CheckOverlap(Class other)
+        public bool CheckOverlap(Lesson other)
         {
             return (EndTime >= other.StartTime || StartTime >= other.StartTime) &&
                    (other.EndTime >= StartTime || other.StartTime >= StartTime);
