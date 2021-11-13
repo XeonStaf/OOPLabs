@@ -9,13 +9,6 @@ namespace Banks.Various_Accounts
         {
         }
 
-        public override Transaction DraftMoney(int amount)
-        {
-            var result = new Transaction(this, null, amount);
-            Balance -= amount;
-            return result;
-        }
-
         public override void EveryDayTask()
         {
             if (Balance < 0)

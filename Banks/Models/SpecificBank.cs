@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Banks.Services;
 using Banks.Tools;
+using Banks.Various_Accounts;
 
 namespace Banks.Models
 {
@@ -59,6 +60,19 @@ namespace Banks.Models
             if (!Clients.Contains(client))
                 throw new CentralBankException("Client is not assigned with this bank");
             client.Accounts.Add(account);
+        }
+
+        public Account CreateAccount(string type, Client client, int startBalance = 0)
+        {
+            Account newAccount = type switch
+            {
+                "Debit" => new DebitAccount(startBalance, this, client),
+                "Saving" => new SavingAccount(startBalance, this, client),
+                "Credit" => new CreditAccount(startBalance, this, client),
+                _ => throw new CentralBankException("Incorrect type")
+            };
+
+            return newAccount;
         }
     }
 }

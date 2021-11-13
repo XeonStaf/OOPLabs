@@ -13,11 +13,6 @@ namespace Banks.Various_Accounts
         {
         }
 
-        public override Transaction DraftMoney(int amount)
-        {
-            throw new CentralBankException("You can't draft money from Saving Account");
-        }
-
         public override void EveryDayTask()
         {
             KeyValuePair<int, double> percent =

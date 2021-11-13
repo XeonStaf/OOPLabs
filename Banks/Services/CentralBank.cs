@@ -8,13 +8,13 @@ namespace Banks.Services
     public class CentralBank : ICentralBank
     {
         private readonly List<SpecificBank> _banks = new List<SpecificBank>();
-        private readonly List<Client> _registerClients = new List<Client>();
         private DateTime _date = DateTime.Now;
 
         public delegate void DayPassHandler();
         public delegate void MonthPassHandler();
         public event DayPassHandler DayPass;
         public event MonthPassHandler MonthPass;
+        public List<Client> RegisterClients { get; } = new List<Client>();
         public SpecificBank CreateBank(
             string name,
             int percent,
@@ -25,13 +25,6 @@ namespace Banks.Services
             var bank = new SpecificBank(name, percent, commission, this, depositPercent, transferLimit);
             _banks.Add(bank);
             return bank;
-        }
-
-        public Client RegisterClient(string name, string passport = "", string address = "")
-        {
-            var result = new Client(name, passport, address);
-            _registerClients.Add(result);
-            return result;
         }
 
         public void CancelTransaction(Transaction transaction)

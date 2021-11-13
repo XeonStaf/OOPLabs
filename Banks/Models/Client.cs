@@ -1,28 +1,19 @@
 using System.Collections.Generic;
+using Banks.Services;
 
 namespace Banks.Models
 {
     public class Client
     {
-        private string _passport;
-        private string _address;
-
-        public Client(string name, string passport = "", string address = "")
-        {
-            Name = name;
-            _passport = passport;
-            _address = address;
-            Accounts = new List<Account>();
-            CheckVerify();
-        }
-
-        public string Name { get; }
-        public List<Account> Accounts { get; }
-        public bool Verified { get; set; }
+        public string Passport { get; internal set; }
+        public string Address { get; internal set; }
+        public string Name { get; internal set; }
+        public List<Account> Accounts { get; } = new List<Account>();
+        public bool Verified { get; private set; }
 
         public bool CheckVerify()
         {
-            if (string.IsNullOrEmpty(_passport) || string.IsNullOrEmpty(_address))
+            if (string.IsNullOrEmpty(Passport) || string.IsNullOrEmpty(Address))
             {
                 Verified = false;
                 return Verified;
@@ -34,13 +25,13 @@ namespace Banks.Models
 
         public void UpdatePassport(string passport)
         {
-            _passport = passport;
+            Passport = passport;
             CheckVerify();
         }
 
         public void UpdateAddress(string address)
         {
-            _address = address;
+            Address = address;
             CheckVerify();
         }
     }

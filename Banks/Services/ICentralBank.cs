@@ -11,7 +11,6 @@ namespace Banks.Services
             int commission,
             Dictionary<int, double> depositPercent,
             int transferLimit = 1000);
-        Client RegisterClient(string name, string passport = "", string address = "");
         void CancelTransaction(Transaction transaction);
         void AddDays(int day);
     }

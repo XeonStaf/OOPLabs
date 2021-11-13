@@ -60,13 +60,17 @@ namespace Banks.Services
 
         private void RegisterClient()
         {
+            var clientBuilder = new ClientBuilder();
             Console.WriteLine("Enter Your name");
             string name = Console.ReadLine();
+            clientBuilder.SetName(name);
             Console.WriteLine("Enter your Passport (you can just press enter)");
             string passport = Console.ReadLine();
+            clientBuilder.SetPassport(passport);
             Console.WriteLine("Enter your Address (you can just press enter)");
             string address = Console.ReadLine();
-            _client = _centralBank.RegisterClient(name, passport, address);
+            clientBuilder.SetAddress(address);
+            _client = clientBuilder.GetResult(_bank);
             _bank.AssignClient(_client);
             string verified = _client.Verified ? "Verified " : "UnVerified ";
             Console.WriteLine($"{name} you have {verified} account");
@@ -116,6 +120,7 @@ namespace Banks.Services
             Account from = ChooseAccount("from");
             Console.WriteLine("Enter amount to Transfer");
             int amount = int.Parse(Console.ReadLine() ?? string.Empty);
+
             try
             {
                 from.TransferMoney(destination, amount);
@@ -160,13 +165,13 @@ namespace Banks.Services
             switch (answer)
             {
                 case "1":
-                    newAccount = new DebitAccount(0, _bank, _client);
+                    newAccount = _bank.CreateAccount("Debit", _client);
                     break;
                 case "2":
-                    newAccount = new CreditAccount(0, _bank, _client);
+                    newAccount = _bank.CreateAccount("Credit", _client);
                     break;
                 case "3":
-                    newAccount = new SavingAccount(0, _bank, _client);
+                    newAccount = _bank.CreateAccount("Saving", _client);
                     break;
                 default:
                     Console.WriteLine("Invalid input. Exiting..");

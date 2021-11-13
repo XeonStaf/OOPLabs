@@ -13,13 +13,13 @@ namespace Banks.Tests
     {
         private ICentralBank _centralBank;
         private SpecificBank _bank1;
-        private SpecificBank _bank2;
         private Client _client;
         private Account _account;
 
         [SetUp]
         public void Setup()
         {
+            var clientBuilder = new ClientBuilder();
             _centralBank = new CentralBank();
             var depositPercent = new Dictionary<int, double>
             {
@@ -27,15 +27,13 @@ namespace Banks.Tests
                 [100000] = 7.3
             };
             _bank1 = _centralBank.CreateBank("SberBank", 4, 50, depositPercent);
-            var depositPercent2 = new Dictionary<int, double>
-            {
-                [50000] = 4,
-                [100000] = 8
-            };
-            _bank2 = _centralBank.CreateBank("Tinkoff", 5, 10, depositPercent2);
-            _client = _centralBank.RegisterClient("Ivan", "31", "Puskina");
+            _client = clientBuilder
+                .SetName("Ivan")
+                .SetAddress("Pushkina")
+                .SetPassport("1234555")
+                .GetResult(_bank1);
             _bank1.AssignClient(_client);
-            _account = new DebitAccount(2000, _bank1, _client);
+            _account = _bank1.CreateAccount("Debit", _client,2000);
             _bank1.AssignAccount(_client, _account);
 
         }
@@ -61,7 +59,7 @@ namespace Banks.Tests
         [Test]
         public void CreditAccountDraftBelow0_CheckCommission()
         {
-            var creditAccount = new CreditAccount(500, _bank1, _client);
+            Account creditAccount = _bank1.CreateAccount("Credit", _client, 500);
             creditAccount.DraftMoney(1000);
             creditAccount.EveryDayTask();
             creditAccount.MonthTask();
@@ -80,7 +78,7 @@ namespace Banks.Tests
         [Test]
         public void DraftMoneyFromSavingAccount_NotAllowed()
         {
-            var savingAccount = new SavingAccount(10000, _bank1, _client);
+            Account savingAccount = _bank1.CreateAccount("Saving", _client, 10000);
             Assert.Catch<CentralBankException>(() =>
             {
                 savingAccount.DraftMoney(6000);
@@ -90,9 +88,9 @@ namespace Banks.Tests
         [Test]
         public void MonthsPassAdjustPercentToSavingAccount_CheckBalance()
         {
-            var savingAccount = new SavingAccount(55000, _bank1, _client);
+            Account savingAccount = _bank1.CreateAccount("Saving", _client, 55000);
             _bank1.AssignAccount(_client, savingAccount);
-            var savingAccount2 = new SavingAccount(150000, _bank1, _client);
+            Account savingAccount2 = _bank1.CreateAccount("Saving", _client, 150000);
             _bank1.AssignAccount(_client, savingAccount2);
             for (int i = 0; i < 30; i++)
             {
@@ -109,9 +107,9 @@ namespace Banks.Tests
         [Test]
         public void MonthsPass_CheckBalanceChanges()
         {
-            var savingAccount = new SavingAccount(55000, _bank1, _client);
+            Account savingAccount = _bank1.CreateAccount("Saving", _client, 55000);
             _bank1.AssignAccount(_client, savingAccount);
-            var savingAccount2 = new SavingAccount(150000, _bank1, _client);
+            Account savingAccount2 = _bank1.CreateAccount("Saving", _client, 150000);
             _bank1.AssignAccount(_client, savingAccount2);
             _centralBank.AddDays(30);
             Assert.AreEqual(71500 ,savingAccount.Balance);
