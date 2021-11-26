@@ -6,6 +6,7 @@ using Backups.Models;
 
 namespace Backups.SpecificSaveAlgorithm
 {
+    [Serializable]
     public class SplitStorages : SaveAlgorithm
     {
         public override List<Storage> CreateStorages(List<JobObject> jobObjects, int key)

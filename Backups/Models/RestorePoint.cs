@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Backups.Models
 {
+    [Serializable]
     public class RestorePoint
     {
         public RestorePoint(int key, BackupJob backupJob, List<JobObject> jobObjects)
