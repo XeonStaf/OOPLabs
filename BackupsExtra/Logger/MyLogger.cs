@@ -4,16 +4,16 @@ namespace BackupsExtra.Logger
 {
     public abstract class MyLogger
     {
-        public MyLogger(bool showDate)
+        public MyLogger(bool isShowDate)
         {
-            ShowDate = showDate;
+            IsShowDate = isShowDate;
         }
 
-        public bool ShowDate { get; }
+        public bool IsShowDate { get; }
         public abstract void WriteLine(string message);
         protected string PrintDate()
         {
-            return ShowDate ? $"[{DateTime.Now:yyyy-M-d}]" : string.Empty;
+            return IsShowDate ? $"[{DateTime.Now:yyyy-M-d}]" : string.Empty;
         }
     }
 }

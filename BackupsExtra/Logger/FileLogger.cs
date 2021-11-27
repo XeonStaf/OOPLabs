@@ -4,8 +4,8 @@ namespace BackupsExtra.Logger
 {
     public class FileLogger : MyLogger
     {
-        public FileLogger(bool showDate, string path)
-            : base(showDate)
+        public FileLogger(bool isShowDate, string path)
+            : base(isShowDate)
         {
             File = new FileInfo(path);
         }

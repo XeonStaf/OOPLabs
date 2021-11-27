@@ -16,7 +16,7 @@ namespace BackupsExtra.PointsChooseAlgorithm
             if (param2 == null || param3 == null)
                 throw new Exception("param2 and param3 should not be null!");
             char logic = (char)param1;
-            var maxNumber = (DateTime)param2;
+            var maxNumber = (int)param2;
             var maxDate = (DateTime)param3;
             var countDependAlgorithm = new CountDependAlgorithm();
             var dateDependAlgorithm = new DateDependAlgorithm();

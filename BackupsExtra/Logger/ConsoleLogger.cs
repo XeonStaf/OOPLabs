@@ -4,8 +4,8 @@ namespace BackupsExtra.Logger
 {
     public class ConsoleLogger : MyLogger
     {
-        public ConsoleLogger(bool showDate)
-            : base(showDate)
+        public ConsoleLogger(bool isShowDate)
+            : base(isShowDate)
         {
         }
 
