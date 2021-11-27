@@ -2,7 +2,7 @@ using System.IO;
 
 namespace BackupsExtra.Logger
 {
-    public class FileLogger : MyLogger
+    public class FileLogger : MyCustomLogger
     {
         public FileLogger(bool isShowDate, string path)
             : base(isShowDate)

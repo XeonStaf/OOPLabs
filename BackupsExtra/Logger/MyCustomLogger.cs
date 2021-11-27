@@ -2,9 +2,9 @@ using System;
 
 namespace BackupsExtra.Logger
 {
-    public abstract class MyLogger
+    public abstract class MyCustomLogger
     {
-        public MyLogger(bool isShowDate)
+        public MyCustomLogger(bool isShowDate)
         {
             IsShowDate = isShowDate;
         }

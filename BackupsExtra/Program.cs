@@ -25,13 +25,13 @@ namespace BackupsExtra
             Directory.CreateDirectory(@"../../../../Backups/FileBackup");
             Directory.CreateDirectory(@"/Users/xeonstaf/Desktop/Test567");
 
-            MyLogger logger = new FileLogger(true, "/Users/xeonstaf/Desktop/Test567/log.txt");
+            MyCustomLogger customLogger = new FileLogger(true, "/Users/xeonstaf/Desktop/Test567/log.txt");
 
             // MyLogger logger = new ConsoleLogger(true);
-            logger.WriteLine("Executing Program.Main");
+            customLogger.WriteLine("Executing Program.Main");
             IExtraBackupManager extraBackupManager = new ExtraBackupManager();
             IBackupManager backupManager = new BackupManager();
-            extraBackupManager.SetLogger(logger);
+            extraBackupManager.SetLogger(customLogger);
 
             BackupJob backupJob = extraBackupManager.CreateBackupJob(backupManager, new SingleStorage(), new FileRepository(@"/Users/xeonstaf/Desktop/Test567"));
             extraBackupManager.AddFileToJob(backupJob, @"../../../../Backups/testFile.txt");

@@ -16,7 +16,7 @@ namespace BackupsExtra.RestoreAlgorithm
                 string zipPath = storage.Archive.FullName;
                 if (path == null)
                 {
-                    JobObject file = backupJob.JobObjects.Find(job =>
+                    JobObject file = backupJob.JobObjects().Find(job =>
                         job.JobFile.Name.Contains(storage.Archive.Name[..storage.Archive.Name.IndexOf('_')]));
                     if (file == null)
                         throw new Exception("Can't find original path");

@@ -2,7 +2,7 @@ using System;
 
 namespace BackupsExtra.Logger
 {
-    public class ConsoleLogger : MyLogger
+    public class ConsoleLogger : MyCustomLogger
     {
         public ConsoleLogger(bool isShowDate)
             : base(isShowDate)
