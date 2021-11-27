@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Backups.Models
 {
+    [Serializable]
     public class BackupJob
     {
         private static int _restorePointCounter = 0;
         private List<JobObject> _jobObjects;
+
         public BackupJob(int key, SaveAlgorithm saveAlgorithm, Repository repository)
         {
             Key = key;
@@ -43,6 +46,11 @@ namespace Backups.Models
                 _jobObjects.Remove(jobObject);
                 return;
             }
+        }
+
+        public List<JobObject> JobObjects()
+        {
+            return _jobObjects;
         }
     }
 }

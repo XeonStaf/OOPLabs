@@ -1,14 +1,18 @@
+using System;
 using System.IO;
 
 namespace Backups.Models
 {
+    [Serializable]
     public class Storage
     {
+        [NonSerialized]
+        private FileInfo _archive;
         public Storage(FileInfo archive)
         {
-            Archive = archive;
+            _archive = archive;
         }
 
-        public FileInfo Archive { get; }
+        public FileInfo Archive => _archive;
     }
 }

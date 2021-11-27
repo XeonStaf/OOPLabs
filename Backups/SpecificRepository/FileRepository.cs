@@ -5,6 +5,7 @@ using Backups.Models;
 
 namespace Backups.SpecificRepository
 {
+    [Serializable]
     public class FileRepository : Repository
     {
         public FileRepository(string path)
