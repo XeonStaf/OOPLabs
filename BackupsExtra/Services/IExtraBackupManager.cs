@@ -15,7 +15,7 @@ namespace BackupsExtra.Services
             object param2 = null,
             object param3 = null);
         void MergePoints(BackupJob backupJob, List<RestorePoint> restorePointsDelete, RestorePoint lastPoint);
-        void SetLogger(MyLogger myLogger);
+        void SetLogger(MyCustomLogger myCustomLogger);
         RestorePoint CreateRestorePoint(BackupJob backupJob);
         BackupJob CreateBackupJob(IBackupManager backupManager, SaveAlgorithm saveAlgorithm, Repository repository);
         JobObject AddFileToJob(BackupJob backupJob, string path);

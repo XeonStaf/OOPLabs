@@ -12,7 +12,7 @@ namespace BackupsExtra.Services
 {
     public class ExtraBackupManager : IExtraBackupManager
     {
-        private MyLogger _myLogger;
+        private MyCustomLogger _myCustomLogger;
         private IBackupManager _backupManager;
         public List<RestorePoint> GetPointsToDelete(
             BackupJob backupJob,
@@ -36,15 +36,15 @@ namespace BackupsExtra.Services
             restorePointsDelete[^1].Storages.ToList().ForEach(storage => singleRule.Handle(backupJob, restorePointsDelete[^1], lastPoint, storage));
         }
 
-        public void SetLogger(MyLogger myLogger)
+        public void SetLogger(MyCustomLogger myCustomLogger)
         {
-            _myLogger = myLogger;
+            _myCustomLogger = myCustomLogger;
         }
 
         public RestorePoint CreateRestorePoint(BackupJob backupJob)
         {
             RestorePoint result = backupJob.CreateRestorePoint();
-            _myLogger.WriteLine($"New Restore Point has been created and has key {result.Key}; {result.Storages.Count} archives generated");
+            _myCustomLogger.WriteLine($"New Restore Point has been created and has key {result.Key}; {result.Storages.Count} archives generated");
             return result;
         }
 
@@ -52,21 +52,21 @@ namespace BackupsExtra.Services
         {
             _backupManager ??= backupManager;
             BackupJob result = backupManager.AddBackupJob(saveAlgorithm, repository);
-            _myLogger.WriteLine($"New backup job has been created and has {saveAlgorithm.ToString()} algorithm in {repository}");
+            _myCustomLogger.WriteLine($"New backup job has been created and has {saveAlgorithm.ToString()} algorithm in {repository}");
             return result;
         }
 
         public JobObject AddFileToJob(BackupJob backupJob, string path)
         {
             JobObject result = backupJob.AddFile(path);
-            _myLogger.WriteLine($"File {result.JobFile.Name} added in backup job #{backupJob.Key}");
+            _myCustomLogger.WriteLine($"File {result.JobFile.Name} added in backup job #{backupJob.Key}");
             return result;
         }
 
         public void RestoreFiles(BackupJob backupJob, RestorePoint restorePoint, string path = null)
         {
             Restore.RestoreFiles(backupJob, restorePoint, path);
-            _myLogger.WriteLine($"Files from restore point #{restorePoint.Key} has been restored");
+            _myCustomLogger.WriteLine($"Files from restore point #{restorePoint.Key} has been restored");
         }
     }
 }
