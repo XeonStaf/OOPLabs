@@ -1,0 +1,65 @@
+﻿@page "/all-employee"
+@inject HttpClient Http
+@inject NavigationManager _navigationManager
+
+<h1>Employees List</h1>
+
+@if (Employees == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Boss ID</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var employee in Employees)
+        {
+            <tr>
+                <td>@employee.Name</td>
+                <td>@employee.Id</td>
+                <td>@employee.BossId</td>
+                <td>
+                    <a href="/employee-edit/@employee.Id"><span class="oi oi-pencil" aria-hidden="true"></span></a>
+                    <button @onclick="() => Delete(employee.Id)" style="border:none;"><span class="oi oi-trash" aria-hidden="true"></span></button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    public Employee[] Employees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:5003/employee/all");
+
+        var httpResponse = await Http.SendAsync(request);
+        Employees = await httpResponse.Content.ReadFromJsonAsync<Employee[]>();
+    }
+
+    public class Employee
+    {
+        public Guid Id { get; set; }
+        public Guid BossId { get; set; }
+        public string Name { get; set; }
+    }
+    
+    private async void Delete(Guid id)
+    {
+        await Http.PostAsJsonAsync($"https://localhost:5003/employee/delete?id={@id}", Employees);
+        _navigationManager.NavigateTo("/all-employee", true);
+    }
+
+}

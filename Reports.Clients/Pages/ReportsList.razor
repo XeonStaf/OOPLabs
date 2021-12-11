@@ -1,0 +1,68 @@
+@page "/all-reports"
+@inject HttpClient Http
+@inject NavigationManager _navigationManager
+
+<h1>Employees List</h1>
+
+@if (_reports == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Task number</th>
+            <th>Is Closed</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var report in _reports)
+        {
+            <tr>
+                <td>@report.Id</td>
+                <td>@report.Tasks.Count</td>
+                <td>@report.Closed</td>
+                <td>
+                    <a href="/report-detail/@report.Id"><span class="oi oi-browser" aria-hidden="true"></span></a>
+                    <button @onclick="() => Close(report.Id)" style="border:none;"><span class="oi oi-x" aria-hidden="true"></span></button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Report[] _reports;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:5003/report/all");
+
+        var httpResponse = await Http.SendAsync(request);
+        _reports = await httpResponse.Content.ReadFromJsonAsync<Report[]>();
+    }
+
+    public class Report
+    {
+        public Guid Id { get; set; }
+        public List<AddTask.TaskModel> Tasks { get; set; } = new List<AddTask.TaskModel>();
+        public bool Closed { get; set; } = false;
+        public DateTime Created { get; set; } = DateTime.Now;
+        public EmployeesList.Employee Employee { get; set; }
+
+    }
+    
+    private async void Close(Guid id)
+    {
+        await Http.PostAsJsonAsync($"https://localhost:5003/report/closed?reportId={@id}", _reports);
+        _navigationManager.NavigateTo("/all-reports", true);
+    }
+
+}

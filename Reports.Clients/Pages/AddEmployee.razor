@@ -1,0 +1,53 @@
+@page "/add-employee"
+@using Microsoft.Extensions.Logging
+@using System.Net
+@inject NavigationManager _navigationManager
+@inject HttpClient Http
+
+<h3>In order to add new employee you need to fill form</h3>
+<hr/>
+@if (_employes == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+<EditForm Model="@_employee" OnSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <p>Name:</p>
+        <InputText class="form-control" @bind-Value="_employee.Name"/>
+        <p>Boss:</p>
+            <InputSelect @bind-Value="_employee.BossId">
+                @foreach (var employee in _employes)
+                {
+                    <option value="@employee.Id">@employee.Name</option>
+                }
+            </InputSelect>
+        <br/>
+        <!-- <input class="form-control" @bind="_employee.BossId"/> -->
+        <button type="submit">Add!</button>
+    </div>
+</EditForm>
+}
+@code {
+    private EmployeesList.Employee _employee = new();
+    private EmployeesList.Employee[] _employes;
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync($"https://localhost:5003/employees/add?name={_employee.Name}&bossId={_employee.BossId}", _employee);
+        _navigationManager.NavigateTo("/all-employee");
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:5003/employee/all");
+
+        var httpResponse = await Http.SendAsync(request);
+        _employes = await httpResponse.Content.ReadFromJsonAsync<EmployeesList.Employee[]>();
+    }
+}

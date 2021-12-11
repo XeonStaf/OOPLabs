@@ -1,0 +1,55 @@
+@page "/create-report"
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager _navigationManager
+@inject HttpClient Http
+<h3>Create Report</h3>
+<h4>In order to create report you need to fill form</h4>
+<hr/>
+@if (_employes == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <EditForm Model="@_employeeId" OnSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div class="form-group">
+            <p>Select Employee:</p>
+            <InputSelect @bind-Value="_employeeId">
+                @foreach (var employee in _employes)
+                {
+                    <option value="@employee.Id">@employee.Name</option>
+                }
+            </InputSelect>
+            <p>Start date:</p>
+            <InputDate class="form-control" @bind-Value="@_startDate"/>
+            
+            <br/>
+            <button type="submit">CREATE!</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private EmployeesList.Employee[] _employes;
+    private Guid _employeeId = new();
+    private DateTime _startDate = new();
+    
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync($"https://localhost:5003/report/create?employeeId={_employeeId}&startDate={_startDate}", _employeeId);
+        _navigationManager.NavigateTo("/all-reports");
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:5003/employee/all");
+
+        var httpResponse = await Http.SendAsync(request);
+        _employes = await httpResponse.Content.ReadFromJsonAsync<EmployeesList.Employee[]>();
+    }
+
+}
