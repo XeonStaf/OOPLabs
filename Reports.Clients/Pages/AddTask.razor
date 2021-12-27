@@ -1,0 +1,79 @@
+@page "/add-task"
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager _navigationManager
+@inject HttpClient Http
+<h3>AddTask</h3>
+<h4>In order to add new employee you need to fill form</h4>
+<hr/>
+@if (_employes == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <EditForm Model="@_task" OnSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div class="form-group">
+            <p>Select Status:</p>
+            <InputSelect @bind-Value="_task.State">
+                @foreach (var state in Enum.GetValues(typeof(AddTask.TaskState)))
+                {
+                    <option value="@state">@state</option>
+                }
+            </InputSelect>
+            <p>Content:</p>
+            <InputText class="form-control" @bind-Value="_task.Content"/>
+            <p>Employee ID:</p>
+            <InputSelect @bind-Value="@_employeeId">
+                @foreach (var employee in _employes)
+                {
+                    <option value="@employee.Id">@employee.Name</option>
+                }
+            </InputSelect>
+            <br/>
+            <!-- <input class="form-control" @bind="_task.AssignedEmployee"/> -->
+            <button type="submit">Add!</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private TaskModel _task = new();
+    private EmployeesList.Employee[] _employes;
+    private Guid _employeeId = new();
+    
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync($"https://localhost:5003/task/add?taskState={_task.State}&content={_task.Content}&employeeId={_employeeId}", _task);
+        _navigationManager.NavigateTo("/all-task");
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:5003/employee/all");
+
+        var httpResponse = await Http.SendAsync(request);
+        _employes = await httpResponse.Content.ReadFromJsonAsync<EmployeesList.Employee[]>();
+    }
+
+    public class TaskModel
+    {
+        public Guid Id { get; set; } = new Guid();
+        public TaskState State { set; get; }
+        public string Content { set; get; }
+        public EmployeesList.Employee AssignedEmployee { set; get; }
+        public DateTime Created { set; get; } = DateTime.Now;
+        public DateTime LastChanges { set; get; } = DateTime.Now;
+    }
+    
+    public enum TaskState
+    {
+        Open,
+        Active,
+        Resolved
+    }
+
+}
