@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web.Http.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Reports.DAL;
 using Reports.DAL.Entities;
@@ -13,7 +12,6 @@ namespace Reports.Server.Controllers
 {
     [ApiController]
     [Route("/task")]
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ReportController: ControllerBase
     {
         private readonly IReportService _service;

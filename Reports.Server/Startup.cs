@@ -16,7 +16,6 @@ using Newtonsoft.Json;
 using Reports.DAL.DataBase;
 using Reports.Server.Controllers;
 using Reports.Server.Services;
-using System.Web.Http.Cors;
 
 namespace Reports.Server
 {

@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Reports.DAL.Entities;
 using Reports.Server.Services;
-using System.Web.Http.Cors;
 
 namespace Reports.Server.Controllers
 {
     [ApiController]
     [Route("/employees")]
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService _service;
