@@ -1,3 +1,4 @@
+![C#](https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=c-sharp&logoColor=white)
 # OOPLabs_.net
 
 Мои лаборотарные работы в рамках курсах Объекто Ориентированного программирование в Университете ИТМО. 
